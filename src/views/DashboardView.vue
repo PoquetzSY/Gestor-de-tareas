@@ -16,9 +16,8 @@
 </template>
 
 <script setup>
-import TaskCard from '@/components/dashboard/TaskCard.vue';
-import TaskColumns from '@/components/dashboard/TaskColumns.vue';
-
+import TaskCard from '@/components/dashboard/TaskCard.vue'
+import TaskColumns from '@/components/dashboard/TaskColumns.vue'
 </script>
 
 <style scoped></style>
