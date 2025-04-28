@@ -66,6 +66,19 @@
               id="description"
               label="Descripción"
             />
+            <div class="flex items-center gap-2 w-full">
+              <CustomSelect
+                v-model="formData.priority_id"
+                :error-message="errors.priority_id"
+                id="priority"
+                label="Nivel de prioridad"
+                :options="priorityOptions"
+              />
+              <div class="flex flex-col gap-2 w-full">
+                <label class="text-neutral-500 text-sm sm:text-base" for="expiration-date">Fecha de vencimiento</label>
+                <input class="border border-neutral-500 bg-neutral-800 py-2 px-4 text-sm sm:text-base rounded-2xl w-full focus:outline-0" id="expiration-date" type="date" v-model="formData.expiration_date" />
+              </div>
+            </div>
             <MainButton type="submit">
               <span v-if="!isLoading">Guardar</span>
               <LoadingSpinner v-if="isLoading" />
@@ -81,50 +94,60 @@
 import LoadingSpinner from '../common/LoadingSpinner.vue'
 import MainButton from '../common/MainButton.vue'
 import CustomInput from '@/components/form/CustomInput.vue'
+import CustomSelect from '@/components/form/CustomSelect.vue'
 import { useFormValidation } from '@/utils/FormValidator'
 import { showToast } from '@/utils/alerts'
+import TaskService from '@/service/TaskFacade'
 import { ref } from 'vue'
 
 const props = defineProps({
   toUpdate: { type: Boolean, default: false },
   taskId: { type: Number, default: null },
+  title: { type: String, default: '' },
+  description: { type: String, default: '' },
+  expiration_date: { type: String, default: '' },
+  priority_id: { type: Number, default: 1 },
+  status_id: { type: Number, default: 1 },
 })
 
 const isOpen = ref(false)
 const isLoading = ref(false)
 const emit = defineEmits(['refresh'])
 
+const priorityOptions = [
+  { id: 1, name: 'Baja' },
+  { id: 2, name: 'Media' },
+  { id: 3, name: 'Alta' },
+]
+
 const formData = ref({
   title: '',
   description: '',
-  assigned_users: [],
-  status_id: 0,
+  expiration_date: '',
+  status_id: 1,
+  priority_id: 1,
 })
 
 const errors = ref({
   title: '',
   description: '',
-  developers: '',
-  status_id: '',
+  expiration_date: '',
+  priority_id: '',
 })
 
-const openModal = async () => {
-  if (props.toUpdate && props.taskId) {
-    try {
-      const response = await TaskService.getTask(props.taskId)
-      formData.value = {
-        title: response.data.title,
-        description: response.data.description,
-        assigned_users: response.data.assigned_users.map((user) => user.id),
-        status_id: response.data.status_id,
-      }
-    } catch (error) {
-      console.error('Error al cargar la tarea:', error)
-      showToast('error', 'Error', 'No se pudo cargar la tarea')
-      return
-    }
-  }
+const openModal = () => {
   isOpen.value = true
+  if (props.toUpdate) {
+    formData.value = {
+      title: props.title,
+      description: props.description,
+      expiration_date: props.expiration_date,
+      status_id: props.status_id,
+      priority_id: props.priority_id,
+    }
+  } else {
+    resetForm()
+  }
 }
 
 const closeModal = () => {
@@ -136,45 +159,45 @@ const resetForm = () => {
   formData.value = {
     title: '',
     description: '',
-    assigned_users: [],
+    expiration_date: '',
     status_id: 1,
+    priority_id: 1,
   }
   errors.value = {
     title: '',
     description: '',
-    developers: '',
-    status_id: '',
+    expiration_date: '',
+    priority_id: '',
   }
 }
 
 const fieldValidations = {
   title: { message: 'El título es obligatorio' },
   description: { message: 'La descripción es obligatoria' },
+  expiration_date: { message: 'La fecha de vencimiento es obligatoria' },
 }
 
 const { validateForm } = useFormValidation(formData, errors, fieldValidations)
 
-const validateDevs = () => {
-  if (formData.value.assigned_users.length === 0) {
-    errors.value.developers = 'Debes seleccionar al menos un desarrollador'
+const validatePriority = () => {
+  if (!formData.value.priority_id) {
+    errors.value.priority_id = 'El nivel de prioridad es obligatorio'
     return false
   }
-  errors.value.developers = ''
+  errors.value.priority_id = ''
   return true
 }
 
 const onSubmit = async () => {
   console.log('Form data:', formData.value)
-  if (!validateForm() && !validateDevs()) return
+  if (!validateForm() && !validatePriority()) return
 
   isLoading.value = true
   try {
     if (props.toUpdate && props.taskId) {
-      delete formData.value.project_id
       await TaskService.updateTask(props.taskId, formData.value)
       showToast('success', 'Éxito', 'Tarea actualizada correctamente')
     } else {
-      delete formData.value.status_id
       await TaskService.createTask(formData.value)
       showToast('success', 'Éxito', 'Tarea creada correctamente')
     }

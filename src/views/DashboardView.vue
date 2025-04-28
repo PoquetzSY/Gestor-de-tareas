@@ -2,7 +2,7 @@
   <div class="bg-neutral-700 min-h-screen flex flex-col text-white py-6 px-4">
     <div class="flex flex-col md:flex-row justify-center md:justify-between items-center mb-6">
       <h1 class="text-2xl">Gestor de tareas</h1>
-      <AddEditTask />
+      <AddEditTask @refresh="fetchTasks"/>
     </div>
     <div class="flex flex-col md:flex-row justify-center gap-4 mb-6">
       <select v-model="selectedUser" class="p-2 rounded bg-neutral-800 outline-none border-none">
@@ -15,9 +15,9 @@
         class="p-2 rounded bg-neutral-800 outline-none border-none"
       >
         <option value="">Todas las prioridades</option>
-        <option value="baja">Baja</option>
-        <option value="media">Media</option>
-        <option value="alta">Alta</option>
+        <option value="1">Baja</option>
+        <option value="2">Media</option>
+        <option value="3">Alta</option>
       </select>
     </div>
 
@@ -39,8 +39,9 @@
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
-                :priority="element.priority"
-                status="Por hacer"
+                :priority_id="element.priority_id"
+                :status_id="element.status_id"
+                @refresh="fetchTasks"
               />
             </div>
           </template>
@@ -62,8 +63,9 @@
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
-                :priority="element.priority"
-                status="En progreso"
+                :priority_id="element.priority_id"
+                :status_id="element.status_id"
+                @refresh="fetchTasks"
               />
             </div>
           </template>
@@ -85,8 +87,9 @@
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
-                :priority="element.priority"
-                status="Completado"
+                :priority_id="element.priority_id"
+                :status_id="element.status_id"
+                @refresh="fetchTasks"
               />
             </div>
           </template>

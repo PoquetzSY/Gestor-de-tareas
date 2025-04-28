@@ -4,7 +4,7 @@
     <div class="relative">
       <input
         :class="[
-          'border border-neutral-500 py-2 px-4 text-sm sm:text-base rounded-2xl w-full focus:outline-0 invalid:border-red-500 invalid:text-red-600',
+          'border border-neutral-500 bg-neutral-800 py-2 px-4 text-sm sm:text-base rounded-2xl w-full focus:outline-0 invalid:border-red-500 invalid:text-red-600',
           type === 'password' && 'pr-10',
         ]"
         :id="uniqueId"

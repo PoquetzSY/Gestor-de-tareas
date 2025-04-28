@@ -5,32 +5,24 @@ export default class TaskService {
     return ApiService.get(`/tasks`)
   }
 
-  static async createTask(taskData) {
-    return ApiService.post(`/tasks`, taskData)
-  }
-
-  static async updateTask(taskId, taskData) {
-    return ApiService.put(`/tasks/${taskId}`, taskData)
-  }
-
-  static async getTask(taskId) {
+  static async getTaskByUser(taskId) {
     return ApiService.get(`/tasks/${taskId}`)
   }
 
-  static async deleteTask(taskId) {
-    return ApiService.delete(`/tasks/${taskId}`)
+  static async createTask(taskData) {
+    return ApiService.post(`/tasks/create`, taskData)
   }
 
-  static async assignDevelopers(taskId, userIds) {
-    return ApiService.post(`/tasks/${taskId}/assign`, {
-      user_ids: userIds,
-    })
+  static async updateTask(taskId, taskData) {
+    return ApiService.put(`/tasks/update/${taskId}`, taskData)
+  }
+
+  static async deleteTask(taskId) {
+    return ApiService.delete(`/tasks/delete/${taskId}`)
   }
 
   static async changeTaskStatus(taskId, status) {
-    return ApiService.put(`/tasks/${taskId}/status`, { status_id: status })
+    return ApiService.put(`/tasks/change-task-status/${taskId}`, { status_id: status })
   }
-  static async getTaskStatus() {
-    return ApiService.get('/tasks/task-statuses')
-  }
+  
 }

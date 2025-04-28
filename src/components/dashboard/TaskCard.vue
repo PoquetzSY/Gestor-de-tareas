@@ -14,8 +14,17 @@
       <p class="text-xs text-gray-400" @click.self="openModal">
         Vence el: {{ props.expiration_date }}
       </p>
-      <div class="flex gap-2 items-center z-20">
-        <AddEditTask :to-update="true" :task-id="props.id" />
+      <div class="flex gap-2 items-center z-10">
+        <AddEditTask
+          :to-update="true"
+          :task-id="props.id"
+          :title="props.title"
+          :description="props.description"
+          :expiration_date="props.expiration_date"
+          :priority_id="props.priority_id"
+          :status_id="props.status_id"
+          @refresh="emit('refresh')"
+        />
         <DeleteTask :title="props.title" :id-to-delete="props.id" />
       </div>
     </div>
@@ -25,7 +34,7 @@
     :title="props.title"
     :description="props.description"
     :expiration_date="props.expiration_date"
-    :priority="props.priority"
+    :priority="priority"
     :id="props.id"
     :status="status"
     :user="user"
@@ -57,17 +66,16 @@ const props = defineProps({
     type: String,
     required: true,
     validator: (value) => {
-      const datePattern = /^\d{2}-\d{2}-\d{4}$/
+      const datePattern = /^\d{4}-\d{2}-\d{2}$/
       return datePattern.test(value)
     },
   },
-  priority: {
-    type: String,
-    default: 'baja',
-    validator: (value) => ['alta', 'media', 'baja'].includes(value),
+  priority_id: {
+    type: Number,
+    required: true,
   },
-  status: {
-    type: String,
+  status_id: {
+    type: Number,
     required: true,
   },
   user: {
@@ -77,15 +85,43 @@ const props = defineProps({
 })
 
 const priorityColor = computed(() => ({
-  'border-l-blue-600': props.priority === 'baja',
-  'border-l-yellow-600': props.priority === 'media',
-  'border-l-red-600': props.priority === 'alta',
+  'border-l-blue-600': props.priority_id === 1,
+  'border-l-yellow-600': props.priority_id === 2,
+  'border-l-red-600': props.priority_id === 3,
 }))
+
+const status = computed(() => {
+  switch (props.status_id) {
+    case 1:
+      return 'Por hacer'
+    case 2:
+      return 'En progreso'
+    case 3:
+      return 'Completada'
+    default:
+      return 'Sin estado'
+  }
+})
+
+const priority = computed(() => {
+  switch (props.priority_id) {
+    case 1:
+      return 'Baja'
+    case 2:
+      return 'Media'
+    case 3:
+      return 'Alta'
+    default:
+      return 'Sin prioridad'
+  }
+})
 
 const openModal = () => {
   isOpen.value = true
 }
 const isOpen = ref(false)
+
+const emit = defineEmits(['refresh'])
 </script>
 
 <style scoped></style>
