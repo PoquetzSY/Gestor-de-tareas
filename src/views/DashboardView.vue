@@ -1,13 +1,19 @@
 <template>
   <div class="bg-neutral-700 min-h-screen flex flex-col text-white py-6 px-4">
-    <h1 class="text-2xl">Gestor de tareas</h1>
-    <div class="flex gap-4 mb-6">
-      <select v-model="selectedUser" class="text-black p-2 rounded">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl">Gestor de tareas</h1>
+      <AddEditTask />
+    </div>
+    <div class="flex justify-center gap-4 mb-6">
+      <select v-model="selectedUser" class="p-2 rounded bg-neutral-800 outline-none border-none">
         <option value="">Todos los usuarios</option>
         <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
       </select>
 
-      <select v-model="selectedPriority" class="text-black p-2 rounded">
+      <select
+        v-model="selectedPriority"
+        class="p-2 rounded bg-neutral-800 outline-none border-none"
+      >
         <option value="">Todas las prioridades</option>
         <option value="baja">Baja</option>
         <option value="media">Media</option>
@@ -81,11 +87,11 @@
 
 <script setup>
 import TaskCard from '@/components/dashboard/TaskCard.vue'
+import AddEditTask from '@/components/modals/AddEditTask.vue'
 import TaskColumns from '@/components/dashboard/TaskColumns.vue'
-
 import draggable from 'vuedraggable'
-
 import { ref } from 'vue'
+
 const todo = ref([
   {
     id: 1,
@@ -143,7 +149,6 @@ const done = ref([
 const users = ref(['Ana', 'Luis', 'Carlos'])
 const selectedUser = ref('')
 const selectedPriority = ref('')
-
 </script>
 
 <style scoped></style>

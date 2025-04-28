@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userRole === 3">
+  <div>
     <MainButton v-show="!props.toUpdate" @buttonClick="openModal">
       Nueva tarea
       <svg
@@ -33,7 +33,7 @@
 
     <Transition>
       <div v-show="isOpen" class="bg-black/50 fixed inset-0 z-20 flex justify-center items-center">
-        <div class="bg-white flex flex-col rounded-xl p-7 w-lg gap-4">
+        <div class="bg-neutral-900 flex flex-col rounded-xl p-7 w-lg gap-4">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold mb-4">
               {{ props.toUpdate ? 'Editar tarea' : 'Nueva tarea' }}
@@ -81,18 +81,12 @@
 import LoadingSpinner from '../common/LoadingSpinner.vue'
 import MainButton from '../common/MainButton.vue'
 import CustomInput from '@/components/form/CustomInput.vue'
-import { useAuthStore } from '@/stores/authStore'
 import { useFormValidation } from '@/utils/FormValidator'
 import { showToast } from '@/utils/alerts'
 import { ref } from 'vue'
 
-const authStore = useAuthStore()
-
-const userRole = authStore.user?.role_id
-
 const props = defineProps({
   toUpdate: { type: Boolean, default: false },
-  projectId: { type: Number, required: true },
   taskId: { type: Number, default: null },
 })
 
@@ -103,7 +97,6 @@ const emit = defineEmits(['refresh'])
 const formData = ref({
   title: '',
   description: '',
-  project_id: props.projectId,
   assigned_users: [],
   status_id: 0,
 })
@@ -122,7 +115,6 @@ const openModal = async () => {
       formData.value = {
         title: response.data.title,
         description: response.data.description,
-        project_id: response.data.project_id,
         assigned_users: response.data.assigned_users.map((user) => user.id),
         status_id: response.data.status_id,
       }
@@ -144,7 +136,6 @@ const resetForm = () => {
   formData.value = {
     title: '',
     description: '',
-    project_id: props.projectId,
     assigned_users: [],
     status_id: 1,
   }
