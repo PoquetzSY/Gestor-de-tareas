@@ -19,25 +19,39 @@
       <TaskColumns title="Por hacer">
         <draggable v-model="todo" group="tasks" item-key="id" class="flex flex-col gap-2">
           <template #item="{ element }">
-            <TaskCard
-              :title="element.title"
-              :description="element.description"
-              :dueDate="element.dueDate"
-              :priority="element.priority"
-            />
+            <div
+              v-if="
+                (selectedUser === '' || element.user === selectedUser) &&
+                (selectedPriority === '' || element.priority === selectedPriority)
+              "
+            >
+              <TaskCard
+                :title="element.title"
+                :description="element.description"
+                :expiration_date="element.expiration_date"
+                :priority="element.priority"
+              />
+            </div>
           </template>
         </draggable>
       </TaskColumns>
 
       <TaskColumns title="En progreso">
-        <draggable v-model="inProgress" group="tasks" item-key="id" class="flex flex-col gap-4">
+        <draggable v-model="inProgress" group="tasks" item-key="id" class="flex flex-col gap-2">
           <template #item="{ element }">
-            <TaskCard
-              :title="element.title"
-              :description="element.description"
-              :dueDate="element.dueDate"
-              :priority="element.priority"
-            />
+            <div
+              v-if="
+                (selectedUser === '' || element.user === selectedUser) &&
+                (selectedPriority === '' || element.priority === selectedPriority)
+              "
+            >
+              <TaskCard
+                :title="element.title"
+                :description="element.description"
+                :expiration_date="element.expiration_date"
+                :priority="element.priority"
+              />
+            </div>
           </template>
         </draggable>
       </TaskColumns>
@@ -45,12 +59,19 @@
       <TaskColumns title="Completadas">
         <draggable v-model="done" group="tasks" item-key="id" class="flex flex-col gap-2">
           <template #item="{ element }">
-            <TaskCard
-              :title="element.title"
-              :description="element.description"
-              :dueDate="element.dueDate"
-              :priority="element.priority"
-            />
+            <div
+              v-if="
+                (selectedUser === '' || element.user === selectedUser) &&
+                (selectedPriority === '' || element.priority === selectedPriority)
+              "
+            >
+              <TaskCard
+                :title="element.title"
+                :description="element.description"
+                :expiration_date="element.expiration_date"
+                :priority="element.priority"
+              />
+            </div>
           </template>
         </draggable>
       </TaskColumns>
@@ -70,15 +91,17 @@ const todo = ref([
     id: 1,
     title: 'Tarea 1',
     description: 'Descripción de la tarea 1',
-    dueDate: '08-10-2025',
+    expiration_date: '08-10-2025',
     priority: 'baja',
+    user: 'Ana',
   },
   {
     id: 2,
     title: 'Tarea 2',
     description: 'Descripción de la tarea 2',
-    dueDate: '08-10-2025',
+    expiration_date: '08-10-2025',
     priority: 'media',
+    user: 'Carlos',
   },
 ])
 const inProgress = ref([
@@ -86,8 +109,9 @@ const inProgress = ref([
     id: 3,
     title: 'Tarea 3',
     description: 'Descripción de la tarea 3',
-    dueDate: '08-10-2025',
+    expiration_date: '08-10-2025',
     priority: 'alta',
+    user: 'Carlos',
   },
 ])
 const done = ref([
@@ -95,10 +119,31 @@ const done = ref([
     id: 4,
     title: 'Tarea 4',
     description: 'Descripción de la tarea 4',
-    dueDate: '08-10-2025',
+    expiration_date: '08-10-2025',
     priority: 'baja',
+    user: 'Ana',
+  },
+  {
+    id: 5,
+    title: 'Tarea 5',
+    description: 'Descripción de la tarea 5',
+    expiration_date: '08-10-2025',
+    priority: 'media',
+    user: 'Luis',
+  },
+  {
+    id: 6,
+    title: 'Tarea 6',
+    description: 'Descripción de la tarea 6',
+    expiration_date: '08-10-2025',
+    priority: 'alta',
+    user: 'Carlos',
   },
 ])
+const users = ref(['Ana', 'Luis', 'Carlos'])
+const selectedUser = ref('')
+const selectedPriority = ref('')
+
 </script>
 
 <style scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-neutral-900 rounded-xl px-4 py-6 gap-4 flex flex-col grow max-w-96">
+  <div class="bg-neutral-900 rounded-xl px-4 py-6 gap-4 flex flex-col grow max-w-96 h-full">
     <h2 class="text-lg">{{ props.title }}</h2>
     <slot />
   </div>

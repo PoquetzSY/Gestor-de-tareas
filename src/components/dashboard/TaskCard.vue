@@ -8,7 +8,7 @@
     <h3 class="text-lg">{{ props.title }}</h3>
     <p class="text-sm">{{ props.description }}</p>
     <div class="flex justify-between items-center">
-      <span class="text-xs text-gray-400">Vence el: {{ props.dueDate }}</span>
+      <span class="text-xs text-gray-400">Vence el: {{ props.expiration_date }}</span>
       <button class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
     </div>
   </div>
@@ -26,7 +26,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  dueDate: {
+  expiration_date: {
     type: String,
     required: true,
     validator: (value) => {
