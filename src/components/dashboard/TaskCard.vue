@@ -1,6 +1,6 @@
 <template>
   <div
-    @click="openModal"
+    @click.self="openModal"
     :class="[
       'bg-neutral-800 border-neutral-800 cursor-pointer border-l-4 border-2 text-white rounded-xl p-3 flex flex-col gap-2 hover:border-neutral-300 transition-all',
       priorityColor,

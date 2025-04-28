@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="openModal" class="text-red-600 cursor-pointer">
+    <button @click.stop="openModal" class="text-red-600 cursor-pointer">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"

@@ -16,7 +16,7 @@
     <button
       v-show="props.toUpdate"
       class="focus:outline-0 text-neutral-400 cursor-pointer"
-      @click="openModal"
+      @click.stop="openModal"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
