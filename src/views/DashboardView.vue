@@ -34,10 +34,13 @@
               "
             >
               <TaskCard
+                :id="element.id"
+                :user="element.user"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
                 :priority="element.priority"
+                status="Por hacer"
               />
             </div>
           </template>
@@ -54,10 +57,13 @@
               "
             >
               <TaskCard
+                :id="element.id"
+                :user="element.user"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
                 :priority="element.priority"
+                status="En progreso"
               />
             </div>
           </template>
@@ -74,10 +80,13 @@
               "
             >
               <TaskCard
+                :id="element.id"
+                :user="element.user"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
                 :priority="element.priority"
+                status="Completado"
               />
             </div>
           </template>
@@ -95,11 +104,6 @@ import draggable from 'vuedraggable'
 import TaskService from '@/service/TaskFacade'
 import { showToast } from '@/utils/alerts'
 import { onMounted, ref } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
-
-const authStore = useAuthStore()
-
-const token = authStore.token
 
 const todo = ref([])
 const inProgress = ref([])
@@ -110,19 +114,20 @@ const selectedUser = ref('')
 const selectedPriority = ref('')
 
 const fetchTasks = async () => {
-  console.log(token)
   isLoading.value = true
   try {
     const response = await TaskService.getTasks()
-    if (response.data.tasks) {
-      todo.value = response.data.tasks.filter((task) => task.status_id === 1)
-      inProgress.value = response.data.tasks.filter((task) => task.status_id === 2)
-      done.value = response.data.tasks.filter((task) => task.status_id === 3)
+    const tasks = response.tasks
+    if (Array.isArray(tasks)) {
+      todo.value = tasks.filter((task) => task.status_id === 1)
+      inProgress.value = tasks.filter((task) => task.status_id === 2)
+      done.value = tasks.filter((task) => task.status_id === 3)
+
       if (todo.value.length === 0 && inProgress.value.length === 0 && done.value.length === 0) {
         showToast('info', 'No hay tareas', 'No se encontraron tareas.')
       }
     } else {
-      showToast('error', 'Error al cargar las tareas', 'No se encontraron tareas.')
+      showToast('error', 'Error al cargar las tareas', 'Formato de tareas inválido.')
     }
   } catch (error) {
     console.error('Error al obtener las tareas:', error)

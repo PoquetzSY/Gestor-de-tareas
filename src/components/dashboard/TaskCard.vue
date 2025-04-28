@@ -7,9 +7,13 @@
     ]"
   >
     <h3 class="md:text-lg text-base" @click.self="openModal">{{ props.title }}</h3>
-    <p class="md:text-sm text-xs flex-1 line-clamp-3" @click.self="openModal">{{ props.description }}</p>
+    <p class="md:text-sm text-xs flex-1 line-clamp-3" @click.self="openModal">
+      {{ props.description }}
+    </p>
     <div class="flex justify-between items-center">
-      <p class="text-xs text-gray-400" @click.self="openModal">Vence el: {{ props.expiration_date }}</p>
+      <p class="text-xs text-gray-400" @click.self="openModal">
+        Vence el: {{ props.expiration_date }}
+      </p>
       <div class="flex gap-2 items-center z-20">
         <AddEditTask :to-update="true" :task-id="props.id" />
         <DeleteTask :title="props.title" :id-to-delete="props.id" />
@@ -61,6 +65,14 @@ const props = defineProps({
     type: String,
     default: 'baja',
     validator: (value) => ['alta', 'media', 'baja'].includes(value),
+  },
+  status: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: String,
+    default: 'Sin asignar',
   },
 })
 
