@@ -1,16 +1,51 @@
 <template>
   <div
-    class="bg-neutral-800 border-neutral-800 border-2 text-white rounded-xl p-3 flex flex-col gap-2 hover:border-neutral-300 transition-all"
+    :class="[
+      'bg-neutral-800 border-neutral-800  border-l-4 border-2 text-white rounded-xl p-3 flex flex-col gap-2 hover:border-neutral-300 transition-all',
+      priorityColor,
+    ]"
   >
-    <h3 class="text-lg">Título de la tarea</h3>
-    <p class="text-sm">Descripción de la tarea</p>
+    <h3 class="text-lg">{{ props.title }}</h3>
+    <p class="text-sm">{{ props.description }}</p>
     <div class="flex justify-between items-center">
-      <span class="text-xs text-gray-400">Vence el: 08-10-2025</span>
+      <span class="text-xs text-gray-400">Vence el: {{ props.dueDate }}</span>
       <button class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  dueDate: {
+    type: String,
+    required: true,
+    validator: (value) => {
+      const datePattern = /^\d{2}-\d{2}-\d{4}$/
+      return datePattern.test(value)
+    },
+  },
+  priority: {
+    type: String,
+    default: 'baja',
+    validator: (value) => ['alta', 'media', 'baja'].includes(value),
+  },
+})
+
+const priorityColor = computed(() => ({
+  'border-l-blue-600': props.priority === 'baja',
+  'border-l-yellow-600': props.priority === 'media',
+  'border-l-red-600': props.priority === 'alta',
+}))
+</script>
 
 <style scoped></style>
