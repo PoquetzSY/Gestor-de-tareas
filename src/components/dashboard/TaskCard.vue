@@ -1,26 +1,40 @@
 <template>
   <div
+    @click="openModal"
     :class="[
-      'bg-neutral-800 border-neutral-800  border-l-4 border-2 text-white rounded-xl p-3 flex flex-col gap-2 hover:border-neutral-300 transition-all',
+      'bg-neutral-800 border-neutral-800 cursor-pointer border-l-4 border-2 text-white rounded-xl p-3 flex flex-col gap-2 hover:border-neutral-300 transition-all',
       priorityColor,
     ]"
   >
-    <h3 class="text-lg">{{ props.title }}</h3>
-    <p class="text-sm">{{ props.description }}</p>
+    <h3 class="md:text-lg text-base">{{ props.title }}</h3>
+    <p class="md:text-sm text-xs flex-1 line-clamp-3">{{ props.description }}</p>
     <div class="flex justify-between items-center">
       <span class="text-xs text-gray-400">Vence el: {{ props.expiration_date }}</span>
-      <div class="flex gap-2 items-center">
+      <div class="flex gap-2 items-center z-20">
         <AddEditTask :to-update="true" :task-id="props.id" />
         <DeleteTask :title="props.title" :id-to-delete="props.id" />
       </div>
     </div>
   </div>
+  <TaskInfo
+    :isOpen="isOpen"
+    :title="props.title"
+    :description="props.description"
+    :expiration_date="props.expiration_date"
+    :priority="props.priority"
+    :id="props.id"
+    :status="status"
+    :user="user"
+    @close="isOpen = false"
+  />
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { ref } from 'vue'
 import AddEditTask from '../modals/AddEditTask.vue'
 import DeleteTask from '../modals/DeleteTask.vue'
+import TaskInfo from './TaskInfo.vue'
 
 const props = defineProps({
   id: {
@@ -55,6 +69,11 @@ const priorityColor = computed(() => ({
   'border-l-yellow-600': props.priority === 'media',
   'border-l-red-600': props.priority === 'alta',
 }))
+
+const openModal = () => {
+  isOpen.value = true
+}
+const isOpen = ref(false)
 </script>
 
 <style scoped></style>

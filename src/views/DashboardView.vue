@@ -1,10 +1,10 @@
 <template>
   <div class="bg-neutral-700 min-h-screen flex flex-col text-white py-6 px-4">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col md:flex-row justify-center md:justify-between items-center mb-6">
       <h1 class="text-2xl">Gestor de tareas</h1>
       <AddEditTask />
     </div>
-    <div class="flex justify-center gap-4 mb-6">
+    <div class="flex flex-col md:flex-row justify-center gap-4 mb-6">
       <select v-model="selectedUser" class="p-2 rounded bg-neutral-800 outline-none border-none">
         <option value="">Todos los usuarios</option>
         <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
@@ -21,7 +21,9 @@
       </select>
     </div>
 
-    <section class="flex justify-between gap-10 p-4 container mx-auto">
+    <section
+      class="flex flex-wrap md:flex-row justify-center md:justify-between gap-5 md:gap-10 p-4 container mx-auto"
+    >
       <TaskColumns title="Por hacer">
         <draggable v-model="todo" group="tasks" item-key="id" class="flex flex-col gap-2">
           <template #item="{ element }">
@@ -132,7 +134,8 @@ const done = ref([
   {
     id: 5,
     title: 'Tarea 5',
-    description: 'Descripción de la tarea 5',
+    description:
+      'Descripción de la tarea 5 sdfsdkfjbskujfskjdhfkjsdfjkhsdfsddffffffffffffffffffffffffffffffffffffffffffffffffffffsjfskdfskdfsdfsdfsfsdfsdf fsjhjsdfjsdfjhsfhsjfjdsfh sdfjsdfjsjdfjsfjsfj sdfjsjdfjsfjsfj',
     expiration_date: '08-10-2025',
     priority: 'media',
     user: 'Luis',
