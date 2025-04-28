@@ -6,10 +6,10 @@
       priorityColor,
     ]"
   >
-    <h3 class="md:text-lg text-base">{{ props.title }}</h3>
-    <p class="md:text-sm text-xs flex-1 line-clamp-3">{{ props.description }}</p>
+    <h3 class="md:text-lg text-base" @click.self="openModal">{{ props.title }}</h3>
+    <p class="md:text-sm text-xs flex-1 line-clamp-3" @click.self="openModal">{{ props.description }}</p>
     <div class="flex justify-between items-center">
-      <span class="text-xs text-gray-400">Vence el: {{ props.expiration_date }}</span>
+      <p class="text-xs text-gray-400" @click.self="openModal">Vence el: {{ props.expiration_date }}</p>
       <div class="flex gap-2 items-center z-20">
         <AddEditTask :to-update="true" :task-id="props.id" />
         <DeleteTask :title="props.title" :id-to-delete="props.id" />

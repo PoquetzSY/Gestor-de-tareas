@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/authStore'
 
-const BASE_URL = 'https://evaluacion2-production-5aec.up.railway.app/api/v1'
+const BASE_URL = 'https://web-production-675e.up.railway.app'
 
 const getAuthHeaders = () => {
   const authStore = useAuthStore()

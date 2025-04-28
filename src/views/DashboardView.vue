@@ -92,66 +92,47 @@ import TaskCard from '@/components/dashboard/TaskCard.vue'
 import AddEditTask from '@/components/modals/AddEditTask.vue'
 import TaskColumns from '@/components/dashboard/TaskColumns.vue'
 import draggable from 'vuedraggable'
-import { ref } from 'vue'
+import TaskService from '@/service/TaskFacade'
+import { showToast } from '@/utils/alerts'
+import { onMounted, ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
-const todo = ref([
-  {
-    id: 1,
-    title: 'Tarea 1',
-    description: 'Descripción de la tarea 1',
-    expiration_date: '08-10-2025',
-    priority: 'baja',
-    user: 'Ana',
-  },
-  {
-    id: 2,
-    title: 'Tarea 2',
-    description: 'Descripción de la tarea 2',
-    expiration_date: '08-10-2025',
-    priority: 'media',
-    user: 'Carlos',
-  },
-])
-const inProgress = ref([
-  {
-    id: 3,
-    title: 'Tarea 3',
-    description: 'Descripción de la tarea 3',
-    expiration_date: '08-10-2025',
-    priority: 'alta',
-    user: 'Carlos',
-  },
-])
-const done = ref([
-  {
-    id: 4,
-    title: 'Tarea 4',
-    description: 'Descripción de la tarea 4',
-    expiration_date: '08-10-2025',
-    priority: 'baja',
-    user: 'Ana',
-  },
-  {
-    id: 5,
-    title: 'Tarea 5',
-    description:
-      'Descripción de la tarea 5 sdfsdkfjbskujfskjdhfkjsdfjkhsdfsddffffffffffffffffffffffffffffffffffffffffffffffffffffsjfskdfskdfsdfsdfsfsdfsdf fsjhjsdfjsdfjhsfhsjfjdsfh sdfjsdfjsjdfjsfjsfj sdfjsjdfjsfjsfj',
-    expiration_date: '08-10-2025',
-    priority: 'media',
-    user: 'Luis',
-  },
-  {
-    id: 6,
-    title: 'Tarea 6',
-    description: 'Descripción de la tarea 6',
-    expiration_date: '08-10-2025',
-    priority: 'alta',
-    user: 'Carlos',
-  },
-])
+const authStore = useAuthStore()
+
+const token = authStore.token
+
+const todo = ref([])
+const inProgress = ref([])
+const done = ref([])
+const isLoading = ref(false)
 const users = ref(['Ana', 'Luis', 'Carlos'])
 const selectedUser = ref('')
 const selectedPriority = ref('')
+
+const fetchTasks = async () => {
+  console.log(token)
+  isLoading.value = true
+  try {
+    const response = await TaskService.getTasks()
+    if (response.data.tasks) {
+      todo.value = response.data.tasks.filter((task) => task.status_id === 1)
+      inProgress.value = response.data.tasks.filter((task) => task.status_id === 2)
+      done.value = response.data.tasks.filter((task) => task.status_id === 3)
+      if (todo.value.length === 0 && inProgress.value.length === 0 && done.value.length === 0) {
+        showToast('info', 'No hay tareas', 'No se encontraron tareas.')
+      }
+    } else {
+      showToast('error', 'Error al cargar las tareas', 'No se encontraron tareas.')
+    }
+  } catch (error) {
+    console.error('Error al obtener las tareas:', error)
+    showToast('error', 'Error al cargar las tareas', error.message)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(fetchTasks)
 </script>
 
 <style scoped></style>
