@@ -15,7 +15,7 @@
 
     <button
       v-show="props.toUpdate"
-      class="focus:outline-0 text-sky-600 cursor-pointer"
+      class="focus:outline-0 text-neutral-400 cursor-pointer"
       @click="openModal"
     >
       <svg

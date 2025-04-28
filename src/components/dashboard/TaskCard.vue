@@ -9,15 +9,24 @@
     <p class="text-sm">{{ props.description }}</p>
     <div class="flex justify-between items-center">
       <span class="text-xs text-gray-400">Vence el: {{ props.expiration_date }}</span>
-      <button class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
+      <div class="flex gap-2 items-center">
+        <AddEditTask :to-update="true" :task-id="props.id" />
+        <DeleteTask :title="props.title" :id-to-delete="props.id" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import AddEditTask from '../modals/AddEditTask.vue'
+import DeleteTask from '../modals/DeleteTask.vue'
 
 const props = defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
