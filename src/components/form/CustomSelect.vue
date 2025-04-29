@@ -2,7 +2,11 @@
   <div class="flex flex-col w-full">
     <label v-if="label" class="text-neutral-500 text-sm sm:text-base pb-2">{{ props.label }}</label>
     <div class="tw-relative">
-      <select class="select-style border-neutral-500 bg-neutral-800 outline-none border" :multiple="multiple" v-model="selectedValue">
+      <select
+        class="select-style border-neutral-500 bg-neutral-800 outline-none border"
+        :multiple="multiple"
+        v-model="selectedValue"
+      >
         <option disabled value="">{{ props.placeholder }}</option>
         <option v-for="option in props.options" :key="option.id" :value="option.id">
           {{ option.name }}

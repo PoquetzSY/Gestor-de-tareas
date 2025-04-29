@@ -28,5 +28,4 @@ export default class TaskService {
   static async changeTaskStatus(taskId, status) {
     return ApiService.put(`/tasks/change-task-status/${taskId}`, { status: status })
   }
-  
 }

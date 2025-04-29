@@ -236,11 +236,8 @@ const onSubmit = async () => {
       showToast('success', 'Éxito', 'Tarea actualizada correctamente')
     } else {
       const response = await TaskService.createTask(formData.value)
-      
-      await TaskService.assignTaskToUser(
-        response.task.id,
-        formData.value.user_id
-      )
+
+      await TaskService.assignTaskToUser(response.task.id, formData.value.user_id)
 
       showToast('success', 'Éxito', 'Tarea creada correctamente')
     }

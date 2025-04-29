@@ -26,7 +26,7 @@
           :user_id="props.user_id"
           @refresh="emit('refresh')"
         />
-        <DeleteTask :title="props.title" :id-to-delete="props.id" @refresh="emit('refresh')"/>
+        <DeleteTask :title="props.title" :id-to-delete="props.id" @refresh="emit('refresh')" />
       </div>
     </div>
   </div>

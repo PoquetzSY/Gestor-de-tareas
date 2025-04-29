@@ -178,14 +178,14 @@ const onTaskDrop = async (event) => {
     return
   }
 
-  let destinationStatusId = 1;
+  let destinationStatusId = 1
 
   if (to === todoList.value?.$el) {
-    destinationStatusId = 1;
+    destinationStatusId = 1
   } else if (to === inProgressList.value?.$el) {
-    destinationStatusId = 2;
+    destinationStatusId = 2
   } else if (to === doneList.value?.$el) {
-    destinationStatusId = 3;
+    destinationStatusId = 3
   }
 
   console.log('Status destino:', destinationStatusId)
