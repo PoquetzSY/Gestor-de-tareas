@@ -5,8 +5,8 @@ export default class TaskService {
     return ApiService.get(`/tasks`)
   }
 
-  static async getTaskByUser(taskId) {
-    return ApiService.get(`/tasks/${taskId}`)
+  static async getTaskByUser(userId) {
+    return ApiService.get(`/tasks/${userId}`)
   }
 
   static async createTask(taskData) {
@@ -22,7 +22,7 @@ export default class TaskService {
   }
 
   static async changeTaskStatus(taskId, status) {
-    return ApiService.put(`/tasks/change-task-status/${taskId}`, { status_id: status })
+    return ApiService.put(`/tasks/change-task-status/${taskId}`, { status: status })
   }
   
 }

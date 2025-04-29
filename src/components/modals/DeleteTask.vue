@@ -56,6 +56,7 @@
 <script setup>
 import MainButton from '@/components/common/MainButton.vue'
 import { showToast } from '@/utils/alerts'
+import TaskService from '@/service/TaskFacade'
 import { ref } from 'vue'
 
 const props = defineProps({

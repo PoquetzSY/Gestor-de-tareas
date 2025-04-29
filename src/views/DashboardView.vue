@@ -2,22 +2,23 @@
   <div class="bg-neutral-700 min-h-screen flex flex-col text-white py-6 px-4">
     <div class="flex flex-col md:flex-row justify-center md:justify-between items-center mb-6">
       <h1 class="text-2xl">Gestor de tareas</h1>
-      <AddEditTask @refresh="fetchTasks"/>
+      <AddEditTask @refresh="fetchTasks" />
     </div>
+
     <div class="flex flex-col md:flex-row justify-center gap-4 mb-6">
       <select v-model="selectedUser" class="p-2 rounded bg-neutral-800 outline-none border-none">
         <option value="">Todos los usuarios</option>
-        <option v-for="user in users" :key="user" :value="user">{{ user }}</option>
+        <option v-for="user in users" :key="user" :value="user.name">{{ user.name }}</option>
       </select>
 
       <select
         v-model="selectedPriority"
         class="p-2 rounded bg-neutral-800 outline-none border-none"
       >
-        <option value="">Todas las prioridades</option>
-        <option value="1">Baja</option>
-        <option value="2">Media</option>
-        <option value="3">Alta</option>
+        <option :value="0">Todas las prioridades</option>
+        <option :value="1">Baja</option>
+        <option :value="2">Media</option>
+        <option :value="3">Alta</option>
       </select>
     </div>
 
@@ -25,17 +26,24 @@
       class="flex flex-wrap md:flex-row justify-center md:justify-between gap-5 md:gap-10 p-4 container mx-auto"
     >
       <TaskColumns title="Por hacer">
-        <draggable v-model="todo" group="tasks" item-key="id" class="flex flex-col gap-2">
+        <draggable
+          ref="todoList"
+          v-model="todo"
+          group="tasks"
+          item-key="id"
+          class="flex flex-col gap-2"
+          @end="onTaskDrop"
+        >
           <template #item="{ element }">
             <div
               v-if="
-                (selectedUser === '' || element.user === selectedUser) &&
-                (selectedPriority === '' || element.priority === selectedPriority)
+                (selectedUser === '' || element.users[0].name === selectedUser) &&
+                (selectedPriority === 0 || element.priority_id === selectedPriority)
               "
             >
               <TaskCard
                 :id="element.id"
-                :user="element.user"
+                :user="element.users[0].name"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
@@ -49,17 +57,24 @@
       </TaskColumns>
 
       <TaskColumns title="En progreso">
-        <draggable v-model="inProgress" group="tasks" item-key="id" class="flex flex-col gap-2">
+        <draggable
+          ref="inProgressList"
+          v-model="inProgress"
+          group="tasks"
+          item-key="id"
+          class="flex flex-col gap-2"
+          @end="onTaskDrop"
+        >
           <template #item="{ element }">
             <div
               v-if="
-                (selectedUser === '' || element.user === selectedUser) &&
-                (selectedPriority === '' || element.priority === selectedPriority)
+                (selectedUser === '' || element.users[0].name === selectedUser) &&
+                (selectedPriority === 0 || element.priority_id === selectedPriority)
               "
             >
               <TaskCard
                 :id="element.id"
-                :user="element.user"
+                :user="element.users[0].name"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
@@ -73,17 +88,24 @@
       </TaskColumns>
 
       <TaskColumns title="Completadas">
-        <draggable v-model="done" group="tasks" item-key="id" class="flex flex-col gap-2">
+        <draggable
+          ref="doneList"
+          v-model="done"
+          group="tasks"
+          item-key="id"
+          class="flex flex-col gap-2"
+          @end="onTaskDrop"
+        >
           <template #item="{ element }">
             <div
               v-if="
-                (selectedUser === '' || element.user === selectedUser) &&
-                (selectedPriority === '' || element.priority === selectedPriority)
+                (selectedUser === '' || element.users[0].name === selectedUser) &&
+                (selectedPriority === 0 || element.priority_id === selectedPriority)
               "
             >
               <TaskCard
                 :id="element.id"
-                :user="element.user"
+                :user="element.users[0].name"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
@@ -107,14 +129,18 @@ import draggable from 'vuedraggable'
 import TaskService from '@/service/TaskFacade'
 import { showToast } from '@/utils/alerts'
 import { onMounted, ref } from 'vue'
+import UserService from '@/service/UserFacade'
 
 const todo = ref([])
 const inProgress = ref([])
 const done = ref([])
+const todoList = ref(null)
+const inProgressList = ref(null)
+const doneList = ref(null)
 const isLoading = ref(false)
-const users = ref(['Ana', 'Luis', 'Carlos'])
+const users = ref([])
 const selectedUser = ref('')
-const selectedPriority = ref('')
+const selectedPriority = ref(0)
 
 const fetchTasks = async () => {
   isLoading.value = true
@@ -140,7 +166,51 @@ const fetchTasks = async () => {
   }
 }
 
-onMounted(fetchTasks)
-</script>
+const onTaskDrop = async (event) => {
+  const movedTask = event.item.__draggable_context?.element
+  const to = event.to
 
-<style scoped></style>
+  if (!movedTask) {
+    console.error('No se encontró la tarea movida.')
+    return
+  }
+
+  let destinationStatusId = 1;
+
+  if (to === todoList.value?.$el) {
+    destinationStatusId = 1;
+  } else if (to === inProgressList.value?.$el) {
+    destinationStatusId = 2;
+  } else if (to === doneList.value?.$el) {
+    destinationStatusId = 3;
+  }
+
+  console.log('Status destino:', destinationStatusId)
+
+  try {
+    await TaskService.changeTaskStatus(movedTask.id, destinationStatusId)
+
+    showToast('success', 'Tarea actualizada', 'El estado de la tarea se actualizó correctamente.')
+  } catch (error) {
+    console.error('Error al actualizar el estado de la tarea:', error)
+    showToast('error', 'Error', 'No se pudo actualizar el estado de la tarea.')
+
+    await fetchTasks()
+  }
+}
+
+const getUsers = async () => {
+  try {
+    const response = await UserService.getUsers()
+    users.value = response.users
+  } catch (error) {
+    console.error('Error al obtener los usuarios:', error)
+    showToast('error', 'Error al cargar los usuarios', error.message)
+  }
+}
+
+onMounted(() => {
+  fetchTasks()
+  getUsers()
+})
+</script>

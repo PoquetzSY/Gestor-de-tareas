@@ -66,6 +66,13 @@
               id="description"
               label="Descripción"
             />
+            <CustomSelect
+                v-model="formData.priority_id"
+                :error-message="errors.priority_id"
+                id="priority"
+                label="Nivel de prioridad"
+                :options="priorityOptions"
+              />
             <div class="flex items-center gap-2 w-full">
               <CustomSelect
                 v-model="formData.priority_id"
