@@ -23,6 +23,7 @@
           :expiration_date="props.expiration_date"
           :priority_id="props.priority_id"
           :status_id="props.status_id"
+          :user_id="props.user_id"
           @refresh="emit('refresh')"
         />
         <DeleteTask :title="props.title" :id-to-delete="props.id" @refresh="emit('refresh')"/>
@@ -81,6 +82,10 @@ const props = defineProps({
   user: {
     type: String,
     default: 'Sin asignar',
+  },
+  user_id: {
+    type: Number,
+    default: null,
   },
 })
 

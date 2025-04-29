@@ -67,12 +67,13 @@
               label="Descripción"
             />
             <CustomSelect
-                v-model="formData.priority_id"
-                :error-message="errors.priority_id"
-                id="priority"
-                label="Nivel de prioridad"
-                :options="priorityOptions"
-              />
+              v-show="!props.toUpdate"
+              v-model="formData.user_id"
+              :error-message="errors.user_id"
+              id="priority"
+              label="Usuario asignado"
+              :options="users"
+            />
             <div class="flex items-center gap-2 w-full">
               <CustomSelect
                 v-model="formData.priority_id"
@@ -82,8 +83,15 @@
                 :options="priorityOptions"
               />
               <div class="flex flex-col gap-2 w-full">
-                <label class="text-neutral-500 text-sm sm:text-base" for="expiration-date">Fecha de vencimiento</label>
-                <input class="border border-neutral-500 bg-neutral-800 py-2 px-4 text-sm sm:text-base rounded-2xl w-full focus:outline-0" id="expiration-date" type="date" v-model="formData.expiration_date" />
+                <label class="text-neutral-500 text-sm sm:text-base" for="expiration-date"
+                  >Fecha de vencimiento</label
+                >
+                <input
+                  class="border border-neutral-500 bg-neutral-800 py-2 px-4 text-sm sm:text-base rounded-2xl w-full focus:outline-0"
+                  id="expiration-date"
+                  type="date"
+                  v-model="formData.expiration_date"
+                />
               </div>
             </div>
             <MainButton type="submit">
@@ -105,6 +113,7 @@ import CustomSelect from '@/components/form/CustomSelect.vue'
 import { useFormValidation } from '@/utils/FormValidator'
 import { showToast } from '@/utils/alerts'
 import TaskService from '@/service/TaskFacade'
+import UserService from '@/service/UserFacade'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -115,10 +124,12 @@ const props = defineProps({
   expiration_date: { type: String, default: '' },
   priority_id: { type: Number, default: 1 },
   status_id: { type: Number, default: 1 },
+  user_id: { type: Number, default: null },
 })
 
 const isOpen = ref(false)
 const isLoading = ref(false)
+const users = ref([])
 const emit = defineEmits(['refresh'])
 
 const priorityOptions = [
@@ -133,6 +144,7 @@ const formData = ref({
   expiration_date: '',
   status_id: 1,
   priority_id: 1,
+  user_id: null,
 })
 
 const errors = ref({
@@ -140,10 +152,24 @@ const errors = ref({
   description: '',
   expiration_date: '',
   priority_id: '',
+  user_id: '',
 })
 
-const openModal = () => {
+const getUsers = async () => {
+  try {
+    const response = await UserService.getUsers()
+    users.value = response.users
+  } catch (error) {
+    console.error('Error al obtener los usuarios:', error)
+    showToast('error', 'Error al cargar los usuarios', error.message)
+  }
+}
+
+const openModal = async () => {
   isOpen.value = true
+  if (!props.toUpdate) {
+    await getUsers()
+  }
   if (props.toUpdate) {
     formData.value = {
       title: props.title,
@@ -151,6 +177,7 @@ const openModal = () => {
       expiration_date: props.expiration_date,
       status_id: props.status_id,
       priority_id: props.priority_id,
+      user_id: props.user_id,
     }
   } else {
     resetForm()
@@ -169,12 +196,14 @@ const resetForm = () => {
     expiration_date: '',
     status_id: 1,
     priority_id: 1,
+    user_id: null,
   }
   errors.value = {
     title: '',
     description: '',
     expiration_date: '',
     priority_id: '',
+    user_id: '',
   }
 }
 
@@ -202,10 +231,17 @@ const onSubmit = async () => {
   isLoading.value = true
   try {
     if (props.toUpdate && props.taskId) {
+      delete formData.value.user_id
       await TaskService.updateTask(props.taskId, formData.value)
       showToast('success', 'Éxito', 'Tarea actualizada correctamente')
     } else {
-      await TaskService.createTask(formData.value)
+      const response = await TaskService.createTask(formData.value)
+      
+      await TaskService.assignTaskToUser(
+        response.task.id,
+        formData.value.user_id
+      )
+
       showToast('success', 'Éxito', 'Tarea creada correctamente')
     }
 

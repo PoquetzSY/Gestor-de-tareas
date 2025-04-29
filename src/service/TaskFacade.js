@@ -9,6 +9,10 @@ export default class TaskService {
     return ApiService.get(`/tasks/${userId}`)
   }
 
+  static async assignTaskToUser(taskId, userId) {
+    return ApiService.post(`/tasks/assign-task/${taskId}`, { users: userId })
+  }
+
   static async createTask(taskData) {
     return ApiService.post(`/tasks/create`, taskData)
   }

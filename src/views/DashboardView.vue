@@ -44,6 +44,7 @@
               <TaskCard
                 :id="element.id"
                 :user="element.users[0].name"
+                :user_id="element.users[0].id"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
@@ -75,6 +76,7 @@
               <TaskCard
                 :id="element.id"
                 :user="element.users[0].name"
+                :user_id="element.users[0].id"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
@@ -106,6 +108,7 @@
               <TaskCard
                 :id="element.id"
                 :user="element.users[0].name"
+                :user_id="element.users[0].id"
                 :title="element.title"
                 :description="element.description"
                 :expiration_date="element.expiration_date"
